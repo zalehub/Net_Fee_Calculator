@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>净费计算器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    h2 {
+      color: #007bff;
+      padding: 10px 0;
+      border-bottom: 2px solid #007bff;
+      width: 50%;
+      margin: 0 auto;
+    }
+
+    form {
+      width: 50%;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+
+    input[type="number"] {
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 5px;
+    }
+
+    button {
+      padding: 15px 30px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    p {
+      margin-top: 15px;
+      font-size: 18px;
+    }
+
+    span {
+      font-weight: bold;
+      color: #007bff;
+    }
+
+  .result-frame {
+      width: 50%;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+  .usage {
+      width: 50%;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+    }
+
+  .footer {
+      width: 50%;
+      margin: 20px auto;
+      padding: 10px;
+      text-align: center;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>净费计算器</h2>
+  <form>
+    <label for="compulsoryInsurance">交强险：</label>
+    <input type="number" id="compulsoryInsurance" />
+    <label for="compulsoryInsurancePolicy">交强险政策百分比：</label>
+    <input type="number" id="compulsoryInsurancePolicy" />
+    <label for="compulsoryInsuranceIsTaxIncluded">
+      <input type="checkbox" id="compulsoryInsuranceIsTaxIncluded" /> 交强险含税
+    </label>
+    <label for="commercialInsurance">商业险：</label>
+    <input type="number" id="commercialInsurance" />
+    <label for="commercialInsurancePolicy">商业险政策百分比：</label>
+    <input type="number" id="commercialInsurancePolicy" />
+    <label for="commercialInsuranceIsTaxIncluded">
+      <input type="checkbox" id="commercialInsuranceIsTaxIncluded" /> 商业险含税
+    </label>
+    <label for="vehicleAndVesselTax">车船税：</label>
+    <input type="number" id="vehicleAndVesselTax" />
+    <button type="button" onclick="calculate()">计算</button>
+  </form>
+
+  <div class="result-frame">
+    <p>交强险净费：<span id="compulsoryInsuranceNetPremium"></span></p>
+    <p>商业险净费：<span id="commercialInsuranceNetPremium"></span></p>
+    <p>车船税净费：<span id="vehicleAndVesselTaxNetPremium"></span></p>
+    <p>总净费：<span id="totalNetPremium"></span></p>
+    <p>交强险佣金：<span id="compulsoryInsuranceCommission"></span></p>
+    <p>商业险佣金：<span id="commercialInsuranceCommission"></span></p>
+    <p>总佣金：<span id="totalCommission"></span></p>
+  </div>
+
+  <div class="usage">
+    <h3>使用说明</h3>
+    <p>1. 请在相应的输入框中准确填写交强险、商业险和车船税的金额。</p>
+    <p>2. 输入对应的政策百分比。</p>
+    <p>3. 根据需要勾选交强险和商业险的含税选项。</p>
+    <p>4. 点击“计算”按钮获取各项净费和佣金的计算结果。</p>
+    <p>注意：未填写的项目将不会参与计算。</p>
+  </div>
+
+  <div class="footer">河北聚一，让出单更简单</div>
+
+  <script>
+    function calculate() {
+      var compulsoryInsurance = document.getElementById('compulsoryInsurance').value;
+      var compulsoryInsurancePolicy = document.getElementById('compulsoryInsurancePolicy').value;
+      var compulsoryInsuranceIsTaxIncluded = document.getElementById('compulsoryInsuranceIsTaxIncluded').checked;
+      var commercialInsurance = document.getElementById('commercialInsurance').value;
+      var commercialInsurancePolicy = document.getElementById('commercialInsurancePolicy').value;
+      var commercialInsuranceIsTaxIncluded = document.getElementById('commercialInsuranceIsTaxIncluded').checked;
+      var vehicleAndVesselTax = document.getElementById('vehicleAndVesselTax').value;
+
+      var compulsoryInsuranceNetPremium = 0;
+      var commercialInsuranceNetPremium = 0;
+      var vehicleAndVesselTaxNetPremium = 0;
+      var totalNetPremium = 0;
+      var compulsoryInsuranceCommission = 0;
+      var commercialInsuranceCommission = 0;
+      var totalCommission = 0;
+
+      if (compulsoryInsurance && compulsoryInsurancePolicy) {
+        var compulsoryInsuranceValue = parseFloat(compulsoryInsurance);
+        var compulsoryInsurancePolicyPercent = parseFloat(compulsoryInsurancePolicy) / 100;
+        compulsoryInsuranceNetPremium = compulsoryInsuranceValue / 1.06;
+        if (compulsoryInsuranceIsTaxIncluded) {
+          compulsoryInsuranceCommission = compulsoryInsuranceNetPremium * compulsoryInsurancePolicyPercent;
+        } else {
+          compulsoryInsuranceCommission = (compulsoryInsuranceNetPremium / 1.06) * compulsoryInsurancePolicyPercent;
+        }
+      }
+
+      if (commercialInsurance && commercialInsurancePolicy) {
+        var commercialInsuranceValue = parseFloat(commercialInsurance);
+        var commercialInsurancePolicyPercent = parseFloat(commercialInsurancePolicy) / 100;
+        commercialInsuranceNetPremium = commercialInsuranceValue / 1.06;
+        if (commercialInsuranceIsTaxIncluded) {
+          commercialInsuranceCommission = commercialInsuranceNetPremium * commercialInsurancePolicyPercent;
+        } else {
+          commercialInsuranceCommission = (commercialInsuranceNetPremium / 1.06) * commercialInsurancePolicyPercent;
+        }
+      }
+
+      if (vehicleAndVesselTax) {
+        vehicleAndVesselTaxNetPremium = parseFloat(vehicleAndVesselTax);
+      }
+
+      totalNetPremium = (compulsoryInsuranceNetPremium || 0) + (commercialInsuranceNetPremium || 0) + (vehicleAndVesselTaxNetPremium || 0);
+      totalCommission = (compulsoryInsuranceCommission || 0) + (commercialInsuranceCommission || 0);
+
+      document.getElementById('compulsoryInsuranceNetPremium').innerHTML = compulsoryInsuranceNetPremium.toFixed(2);
+      document.getElementById('commercialInsuranceNetPremium').innerHTML = commercialInsuranceNetPremium.toFixed(2);
+      document.getElementById('vehicleAndVesselTaxNetPremium').innerHTML = vehicleAndVesselTaxNetPremium.toFixed(2);
+      document.getElementById('totalNetPremium').innerHTML = totalNetPremium.toFixed(2);
+      document.getElementById('compulsoryInsuranceCommission').innerHTML = compulsoryInsuranceCommission.toFixed(2);
+      document.getElementById('commercialInsuranceCommission').innerHTML = commercialInsuranceCommission.toFixed(2);
+      document.getElementById('totalCommission').innerHTML = totalCommission.toFixed(2);
+    }
+  </script>
+</body>
+
+</html>
